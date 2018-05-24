@@ -103,6 +103,23 @@ module.exports = function (app, fs) {
                     return;
                 })
         })
-
     })
+    // 세션 초기 설정
+    app.get('/', function (req, res) {
+        sess = req.session;
+    });
+    // 세션 변수 설정
+    app.get('/login', function (req, res) {
+        sess = req.session;
+        sess.username = "Lee" // sess.[키 이름] = 값으로 변수를 설정한다.
+    });
+    // 세션 변수 사용
+    app.get('/', function (req, res) {
+        sess = req.session;
+        console.log(sess.username);
+    });
+    // 세션 삭제
+    req.session.destroy(function (err) {
+        // cannot access session here
+    });
 }

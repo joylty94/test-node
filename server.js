@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var session = require('express-session');
+var session = require('express-session'); // 세션 연결 미들웨어
 var fs = require("fs")
 
 app.set('views', __dirname + '/views');
