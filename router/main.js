@@ -56,4 +56,31 @@ module.exports = function (app, fs) {
                 })
         })
     });
+
+    // PUT api는 결과 값이 항상 같아야 되므로 패스.
+
+    app.delete('/deleteUser/:username', function (req, res) {
+        var result = {};
+        //data 불러오기
+        fs.readFile(__dirname + "/../data/user.json", "utf8", function (err, data) {
+            var users = JSON.parse(data);
+
+            // data에 username이 없는 경우
+            if (!users[req.params.username]) {
+                result["success"] = 0;
+                result["error"] = "not found";
+                res.json(result);
+                return;
+            }
+
+            delete users[req.params.username]; // users 객체의 username 삭제
+            fs.writeFile(__dirname + "/../data/user.json", // data에 저장
+                JSON.stringify(users, null, '\t'), "utf8", function (err, data) {
+                    result["success"] = 1;
+                    res.json(result);
+                    return;
+                })
+        })
+
+    })
 }

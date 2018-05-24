@@ -3,10 +3,6 @@
 		"password": "first_pass",
 		"name": "abet"
 	},
-	"second_user": {
-		"password": "second_pass",
-		"name": "betty"
-	},
 	"newuser": {
 		"password": "newpass",
 		"name": "Lee"
