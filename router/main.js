@@ -1,9 +1,12 @@
 module.exports = function (app, fs) {
 
     app.get('/', function (req, res) {
+        var sess = req.session;
         res.render('index', {
             title: "MY HOMEPAGE",
-            length: 5
+            length: 5,
+            name: sess.name,
+            username: sess.username
         })
     });
 
@@ -107,19 +110,59 @@ module.exports = function (app, fs) {
     // 세션 초기 설정
     app.get('/', function (req, res) {
         sess = req.session;
+        console.log(sess.username);
     });
     // 세션 변수 설정
     app.get('/login', function (req, res) {
         sess = req.session;
         sess.username = "Lee" // sess.[키 이름] = 값으로 변수를 설정한다.
     });
-    // 세션 변수 사용
-    app.get('/', function (req, res) {
+
+    //로그인
+    app.get('/login/:username/:password', function (req, res) {
+        var sess;
+        sess = req.session; // 세션 받기
+
+        fs.readFile(__dirname + "/../data/user.json", "utf8", function (err, data) {
+            var users = JSON.parse(data);
+            var username = req.params.username;
+            var password = req.params.password;
+            var result = {};
+            if (!users[username]) { // users 객체의 username이 없을 경우
+                // USERNAME NOT FOUND
+                result["success"] = 0;
+                result["error"] = "not found";
+                res.json(result);
+                return;
+            }
+
+            if (users[username]["password"] == password) { // users 객체 안에 username안에 password 비교
+                result["success"] = 1;
+                sess.username = username;
+                sess.name = users[username]["name"];
+                res.json(result);
+
+            } else {
+                result["success"] = 0;
+                result["error"] = "incorrect";
+                res.json(result);
+            }
+        })
+    });
+
+    // 로그아웃
+    app.get('/logout', function (req, res) {
         sess = req.session;
-        console.log(sess.username);
-    });
-    // 세션 삭제
-    req.session.destroy(function (err) {
-        // cannot access session here
-    });
+        if (sess.username) { // sess.username 변수가 있을 경우
+            req.session.destroy(function (err) { // 세션 삭제
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.redirect('/');
+                }
+            })
+        } else {
+            res.redirect('/');
+        }
+    })
 }

@@ -10,5 +10,9 @@
 	"username": {
 		"password": "newpass",
 		"name": "Lee"
-	}
+    },
+    "testuser": {
+        "password": "1234",
+        "name": "yong"
+    }
 }
