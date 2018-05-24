@@ -57,7 +57,29 @@ module.exports = function (app, fs) {
         })
     });
 
-    // PUT api는 결과 값이 항상 같아야 되므로 패스.
+    app.put('/updateUser/:username', function (req, res) {
+
+        var result = {};
+        var username = req.params.username;
+
+        if (!req.body["password"] || !req.body["name"]) {
+            result["success"] = 0;
+            result["error"] = "invalid request";
+            res.json(result);
+            return;
+        }
+
+        fs.readFile(__dirname + "/../data/user.json", 'utf8', function (err, data) {
+            var users = JSON.parse(data);
+            users[username] = req.body;
+
+            fs.writeFile(__dirname + "/../data/user.json",
+                JSON.stringify(users, null, '\t'), "utf8", function (err, data) {
+                    result = { "success": 1 };
+                    res.json(result);
+                })
+        })
+    });
 
     app.delete('/deleteUser/:username', function (req, res) {
         var result = {};
