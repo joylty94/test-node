@@ -7,8 +7,6 @@ module.exports = function (app, fs) {
         })
     });
 
-
-
     app.get('/list', function (req, res) {
         fs.readFile(__dirname + "/../data/" + "user.json", 'utf8', function (err, data) {
             console.log(data);
@@ -16,5 +14,11 @@ module.exports = function (app, fs) {
         });
     })
 
+    app.get('/getUser/:username', function (req, res) {
+        fs.readFile(__dirname + "/../data/user.json", 'utf8', function (err, data) {
+            var users = JSON.parse(data);
+            res.json(users[req.params.username]);
+        });
+    });
 
 }
